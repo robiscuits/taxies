@@ -1,1 +1,13 @@
 Project Proposal:
+
+Reading the data:
+
+website: https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page
+
+For each file run wget https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2009-01.csv, changing the 2009-01 part to the year/month you are interested in
+
+Variables of Interest: Latitude/Longitude of pickup, Latitude/Longitude of dropoff, cab fare, tip amount, number of passengers
+
+Statistical Methods: Unsure
+
+Computational Steps: Gather data and run each file in parallel using the CHTC. Each file is ~2 GB, so it makes sense to run each in parallel.
