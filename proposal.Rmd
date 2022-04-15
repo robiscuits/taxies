@@ -1,0 +1,36 @@
+---
+title: "Project Proposal"
+author: "Graham Miotke"
+date: "4/14/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+Data from Kaggle: Yellow New York Taxi Dataset
+
+![](taxi.png)
+
+Contains data relating to each new york taxi trip, broken up into different csv files for each month.
+
+## Reading the Data
+
+Use a shell script with a wget command line
+
+![](shell_script.png)
+
+## Variables of Interest
+
+Unsure
+
+## Statistical Methods
+
+Unsure
+
+## Computational Steps
+
+Use the CHTC to perform ... on each csv file in parallel. This makes sense because each of the files is ~ 2 GB.
