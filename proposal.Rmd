@@ -1,6 +1,6 @@
 ---
 title: "Project Proposal"
-author: "Graham Miotke"
+author: "Team Bravo"
 date: "4/14/2022"
 output: html_document
 ---
@@ -15,17 +15,23 @@ Data from Kaggle: Yellow New York Taxi Dataset
 
 ![](taxi.png)
 
-Contains data relating to each new york taxi trip, broken up into different csv files for each month.
+Contains data relating to each New York yellow taxi trip, broken up into different csv files for each month.
+
+Data also available at https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page.
 
 ## Reading the Data
 
-Use a shell script with a wget command line
+**Use a shell script with a wget command line**
 
 ![](shell_script.png)
 
+#### Example of the data:
+
+![](data_head.png)
+
 ## Variables of Interest
 
-Unsure
+#### Pickup Time, Drop off Time, Number of Passengers, Trip Distance, Trip Starting Latitude & Longitude, Trip Ending Latitude and Longitude, Fare Amount, Tip Amount
 
 ## Statistical Methods
 
