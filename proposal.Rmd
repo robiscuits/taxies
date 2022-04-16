@@ -73,6 +73,8 @@ This variable measures how much the passengers tipped the cab driver
 
 Use the CHTC to perform analysis on each csv file in parallel. This makes sense because each of the files is ~ 2 GB. Each file will be given an extra variable determining which area of the city a person or group of people were picked up. By adding this variable, it will allow us to find the average tipping percentage of passengers from this area. Once each area is given a average tipping percentage, we will be able to compare them. We can do this for each file, meaning we will know the highest areas for each month. We can then compare the months to see if there are trends. After we know the general trends, we could check to see if there are trends within a day, looking at areas with the highest tipping percentage by hour.
 
+![](imgs/Parallelization.png)
+
 ## Link to Github repository
 
 https://github.com/robiscuits/taxies
