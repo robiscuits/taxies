@@ -13,13 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **Are there areas in New York where cab riders are more likely to tip larger percentages? Does this vary by time of day, season, etc.?**
 
-![](New York.jpg)
+![](imgs/New York.jpg)
 
 ## Data
 
 Data from Kaggle: Yellow New York Taxi Dataset
 
-![](taxi.png)
+![](imgs/taxi.png)
 
 Contains data relating to each New York yellow taxi trip, broken up into different csv files for each month.
 
@@ -29,11 +29,11 @@ Data also available at https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.
 
 **Use a shell script with a wget command line**
 
-![](shell_script.png)
+![](imgs/shell_script.png)
 
 #### Example of the data:
 
-![](data_head.png)
+![](imgs/data_head.png)
 
 ## Variables of Interest
 
