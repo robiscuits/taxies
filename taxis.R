@@ -14,16 +14,14 @@ df <- month_data %>%
   group_by(PULocationID) %>% 
   summarise_all(mean)
 
-year <- substring(data_url, 60, 63)
-month <- substring(data_url, 65, 66)
+date <- substring(data_url, 60, 66)
 
 for( i in colnames(df)[-1]){
   x <- tibble(
     "a" = df$PULocationID,
     "b" = pull(df, i),
-    "c" = year,
-    "d" = month
+    "c" = date
   )
-  name = paste(i, "_", year, "-", month, ".csv", sep = "")
+  name = paste(i, "_", date, ".csv", sep = "")
   write_csv(x, name, col_names = FALSE)
 }

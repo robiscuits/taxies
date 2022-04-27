@@ -7,7 +7,7 @@ rm output/*
 rm data/*
 
 start=2018
-end=2022
+end=2021
 
 i=$start
 while [ "$i" -le "$end" ]; do

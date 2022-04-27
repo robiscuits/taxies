@@ -1,4 +1,0 @@
-job 1 taxis.sub
-
-script pre 1 get-data.sh
-script post 1 merge.sh
