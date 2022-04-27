@@ -24,28 +24,51 @@ city_sf <- read_sf(geo_url, as_tibble = TRUE) %>%
 ```
 
 ```{r}
-unique(city_sf$objectid)
-```
-
-
-```{r}
-test_data <- read_csv("test_data/2018_data_small.csv")
-```
-
-```{r}
-df <- test_data %>% 
+df <- read_csv("test_data/2018_data_small.csv") %>% 
   select(PULocationID, trip_distance, passenger_count, fare_amount, tip_amount, total_amount) %>% 
   group_by(PULocationID) %>% 
-  summarise_all(sum)
-```
+  summarise_all(mean)
 
-```{r}
 ride_sf <- city_sf %>% 
   merge(df, by.x = "objectid", by.y = "PULocationID")
 
 ggplot(ride_sf) +
   geom_sf(data = city_sf, fill = "white") +
-  geom_sf(aes(fill = trip_distance))
+  geom_sf(aes(fill = tip_amount))
 ```
 
+```{r}
+for (file in list.files("data", full.names = TRUE)[1]){
+  df <- read_csv(file, show_col_types = FALSE) %>% 
+    select(PULocationID, trip_distance, passenger_count, fare_amount, tip_amount, total_amount) %>% 
+    group_by(PULocationID) %>% 
+    summarise_all(sum)
+  
+  ride_sf <- city_sf %>% 
+    merge(df, by.x = "objectid", by.y = "PULocationID")
+  
+  p <- ggplot(ride_sf) +
+    geom_sf(data = city_sf, fill = "white") +
+    geom_sf(aes(fill = trip_distance))
+  print(p)
+}
+```
+
+```{r}
+path = "data/2018-01.csv"
+df <- read_csv(path)
+year = substring(path, 6, 9)
+month = substring(path, 11, 12)
+
+for( i in colnames(df)[-1]){
+  x <- tibble(
+    "PULocationID" = df$PULocationID,
+    i = pull(df, i),
+    year = year,
+    month = month
+  )
+  name = paste(i, "_", year, "-", month, ".csv", sep = "")
+  write_csv(x, name, col_names = FALSE)
+}
+```
 
