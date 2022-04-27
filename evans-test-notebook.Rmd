@@ -1,0 +1,51 @@
+---
+title: "Stat 479 Final Project"
+author: "Evan O'Keefe"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+library(RSocrata)
+```
+
+```{r}
+geo_url = "https://data.cityofnewyork.us/api/geospatial/d3c5-ddgc?method=export&format=GeoJSON"
+
+city_sf <- read_sf(geo_url, as_tibble = TRUE) %>% 
+  st_transform(2263) %>% 
+  select(objectid, zone, borough)
+```
+
+```{r}
+unique(city_sf$objectid)
+```
+
+
+```{r}
+test_data <- read_csv("2018_data_small.csv")
+```
+
+```{r}
+df <- test_data %>% 
+  select(PULocationID, trip_distance, passenger_count, fare_amount, tip_amount, total_amount) %>% 
+  group_by(PULocationID) %>% 
+  summarise_all(sum)
+```
+
+```{r}
+ride_sf <- city_sf %>% 
+  merge(df, by.x = "objectid", by.y = "PULocationID")
+
+ggplot(ride_sf) +
+  geom_sf(data = city_sf, fill = "white") +
+  geom_sf(aes(fill = trip_distance))
+```
+
+

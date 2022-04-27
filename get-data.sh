@@ -27,7 +27,7 @@ i=$start
 while [ "$i" -le "$end" ]; do
     for j in $(seq -f "%02g" 1 12); do
         # wget -P data/$i/ https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_$i-$j.csv
-        echo "https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_$i-$j" >> data_paths.txt
+        echo "https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_$i-$j.csv" >> data_paths.txt
     done
     i=$(( $i + 1 ))
 done 
