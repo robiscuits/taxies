@@ -1,4 +1,5 @@
 #!/bin/bash
+rm data_paths.txt
 
 start=$1
 end=$2
