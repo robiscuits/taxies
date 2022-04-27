@@ -29,7 +29,7 @@ unique(city_sf$objectid)
 
 
 ```{r}
-test_data <- read_csv("2018_data_small.csv")
+test_data <- read_csv("test_data/2018_data_small.csv")
 ```
 
 ```{r}
