@@ -7,21 +7,22 @@ if (length(args) != 1) {
 }
 
 data_url <- args[1]
+year <- substring(data_url, 60, 63)
+month <- substring(data_url, 65, 66)
 month_data <- read_csv(data_url)
 
 df <- month_data %>% 
   select(PULocationID, trip_distance, passenger_count, fare_amount, tip_amount, total_amount) %>% 
   group_by(PULocationID) %>% 
-  summarise_all(mean)
+  summarise(
+    trip_distance = sum(trip_distance),
+    passenger_count = sum(passenger_count),
+    fare_amount = sum(fare_amount),
+    tip_amount = sum(tip_amount),
+    total_amount = sum(total_amount),
+    count = n()
+    ) %>% 
+  mutate(year = year, month = month)
 
-date <- substring(data_url, 60, 66)
-
-for( i in colnames(df)[-1]){
-  x <- tibble(
-    "a" = df$PULocationID,
-    "b" = pull(df, i),
-    "c" = date
-  )
-  name = paste(i, "_", date, ".csv", sep = "")
-  write_csv(x, name, col_names = FALSE)
-}
+name = paste(year, "-", month, "_data.csv", sep = "")
+write_csv(df, name, col_names = FALSE)
