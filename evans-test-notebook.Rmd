@@ -21,54 +21,62 @@ geo_url = "https://data.cityofnewyork.us/api/geospatial/d3c5-ddgc?method=export&
 city_sf <- read_sf(geo_url, as_tibble = TRUE) %>% 
   st_transform(2263) %>% 
   select(objectid, zone, borough)
+
+manhattan_sf <- city_sf %>% 
+  filter(borough == "Manhattan")
+```
+
+
+```{r, fig.height=1200, fig.width=1200}
+all_data <- read_csv("data/all_data.csv")
+
+df <- all_data %>% 
+  group_by(objectid) %>% 
+  summarise_at(vars(trip_distance:count), sum)
+
+rides_sf <- manhattan_sf %>% 
+  merge(df)
+
+ggplot(rides_sf) +
+  geom_sf(data = manhattan_sf, fill = "white") +
+  geom_sf(aes(fill = total_amount * 100)) +
+  scale_fill_distiller(name = "", direction = 1, palette='Greens') +
+  theme_void() +
+    labs(title = 'Manhattan Yellow Taxi Revenue', subtitle = "June")
+
 ```
 
 ```{r}
-df <- read_csv("test_data/2018_data_small.csv") %>% 
-  select(PULocationID, trip_distance, passenger_count, fare_amount, tip_amount, total_amount) %>% 
-  group_by(PULocationID) %>% 
-  summarise_all(mean)
+library(gganimate)
+library(lubridate)
+library(transformr)
 
-ride_sf <- city_sf %>% 
-  merge(df, by.x = "objectid", by.y = "PULocationID")
+rides <- read_csv("data/all_data.csv") %>% 
+  group_by(objectid, month) %>% 
+  summarise_at(vars(trip_distance:count), sum)
 
-ggplot(ride_sf) +
-  geom_sf(data = city_sf, fill = "white") +
-  geom_sf(aes(fill = tip_amount))
-```
+rides_sf <- manhattan_sf %>% 
+  merge(rides)
 
-```{r}
-for (file in list.files("data", full.names = TRUE)[1]){
-  df <- read_csv(file, show_col_types = FALSE) %>% 
-    select(PULocationID, trip_distance, passenger_count, fare_amount, tip_amount, total_amount) %>% 
-    group_by(PULocationID) %>% 
-    summarise_all(sum)
-  
-  ride_sf <- city_sf %>% 
-    merge(df, by.x = "objectid", by.y = "PULocationID")
-  
-  p <- ggplot(ride_sf) +
-    geom_sf(data = city_sf, fill = "white") +
-    geom_sf(aes(fill = trip_distance))
-  print(p)
-}
-```
+p <- ggplot(rides_sf, aes(group=seq_along(month))) +
+  geom_sf(data = manhattan_sf, fill = "white") +
+  geom_sf(aes(fill = total_amount / 1e6)) +
+  scale_fill_distiller(
+    name='Million $',
+    breaks = c(0, 2.5, 5, 7.5, 10, 12.5, 15),
+    direction = 1,
+    palette='Greens',
+    guide = guide_colorbar(frame.colour = "black", barwidth = 2, barheight = 30)
+    ) +
+  theme_void(base_size = 30) +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(
+    title = 'Manhattan Yellow Taxi Revenue By Month',
+    subtitle = '{month.name[as.integer(closest_state)]}'
+    ) +
+  transition_states(month) 
 
-```{r}
-path = "data/2018-01.csv"
-df <- read_csv(path)
-year = substring(path, 6, 9)
-month = substring(path, 11, 12)
-
-for( i in colnames(df)[-1]){
-  x <- tibble(
-    "PULocationID" = df$PULocationID,
-    i = pull(df, i),
-    year = year,
-    month = month
-  )
-  name = paste(i, "_", year, "-", month, ".csv", sep = "")
-  write_csv(x, name, col_names = FALSE)
-}
+animate(p, height = 1200, width = 1200)
+anim_save("income.gif")
 ```
 
