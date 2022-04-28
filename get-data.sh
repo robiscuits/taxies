@@ -6,7 +6,7 @@ rm error/*
 rm output/*
 rm data/*
 
-start=2018
+start=2017
 end=2021
 
 i=$start

@@ -24,5 +24,21 @@ df <- month_data %>%
     ) %>% 
   mutate(year = year, month = month)
 
-name = paste(year, "-", month, "_data.csv", sep = "")
+name = paste("pu_", year, "-", month, "_data.csv", sep = "")
+write_csv(df, name, col_names = FALSE)
+
+df <- month_data %>% 
+  select(DOLocationID, trip_distance, passenger_count, fare_amount, tip_amount, total_amount) %>% 
+  group_by(DOLocationID) %>% 
+  summarise(
+    trip_distance = sum(trip_distance),
+    passenger_count = sum(passenger_count),
+    fare_amount = sum(fare_amount),
+    tip_amount = sum(tip_amount),
+    total_amount = sum(total_amount),
+    count = n()
+    ) %>% 
+  mutate(year = year, month = month)
+
+name = paste("do_", year, "-", month, "_data.csv", sep = "")
 write_csv(df, name, col_names = FALSE)
