@@ -79,4 +79,42 @@ p <- ggplot(rides_sf, aes(group=seq_along(month))) +
 animate(p, height = 1200, width = 1200)
 anim_save("income.gif")
 ```
+```
+```{r}
+rides_sf%>%
+  group_by(zone)%>%
+  summarize(first(objectid),tips = mean(avg_tips))%>%
+  arrange(desc(tips))
+```
 
+```{r}
+zones = c(13,125,249,158,234,153,128,42,74,127)
+
+ezplot = rides_sf%>%
+  filter(objectid %in% zones)
+
+ggplot(ezplot, aes(x = date, y = avg_tips))+
+  geom_smooth(aes(color = zone), se = F)+
+  theme_void() +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(
+    title = 'Average Tips By Month & Neighborhood',
+    x = 'Date of Measure',
+    y = 'Average Tips'
+    )
+```
+
+```{r}
+library(ggpubr)
+library(rstatix)
+library(eeptools)
+
+rides_aov = rides_sf%>%
+  st_drop_geometry()%>%
+  select(zone, date, avg_tips)%>%
+  group_by(zone,date)%>%
+  summarize(avg_tips = mean(avg_tips))
+
+res.aov <- anova_test(data = rides_aov, dv = avg_tips, wid = zone, within = date)
+get_anova_table(res.aov)
+```
