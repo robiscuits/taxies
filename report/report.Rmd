@@ -2,11 +2,10 @@
 title: "Project Proposal"
 author: "Team Bravo"
 date: "`r Sys.Date()`"
-output:
-     github_document: default
-     html_document: default
 knit: (function(inputFile, encoding) {
-  rmarkdown::render(inputFile, encoding = encoding, output_format = "all") })
+  rmarkdown::render(inputFile, output_format="github_document", output_file="README.md");
+  rmarkdown::render(inputFile, output_format="html_document", 
+  output_file=paste(substr(inputFile,1,nchar(inputFile)-4),'.html', sep=""))})
 ---
 
 ```{r setup, include=FALSE}
