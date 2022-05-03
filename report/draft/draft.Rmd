@@ -1,8 +1,12 @@
 ---
-title: "Project Proposal"
+title: "First Draft"
 author: "Team Bravo"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+     github_document: default
+     html_document: default
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_format = "all") })
 ---
 
 ```{r setup, include=FALSE}
@@ -20,7 +24,7 @@ The dataset contains information on every taxi trip to occur in New York City be
 <br/><br/>
 
 ```{r, echo=FALSE, out.width="70%", fig.cap="\\textcolor{red}{Higher tipping percentages on wealtier regions}", fig.align = 'center'}
-knitr::include_graphics("avgtips.gif")
+knitr::include_graphics("../../imgs/avgtips.gif")
 ```
 
 <br/><br/>
@@ -29,4 +33,6 @@ knitr::include_graphics("avgtips.gif")
 
 Although the animation above shows little variability in tipping percentages over time within neighborhoods, we can see a slight favoring of southern Manhattan regions. Battery Park City and Hudson Square, along with West Village and Union Square boast the highest tipping percentages averaged over our time frame. These neighborhoods are all located near the Financial District, in wealthier neighborhoods. Harlem and other northern Manhattan neighborhoods boast lower tipping percentages. These neighborhoods are also far less attractive to wealthier riders, which we posit to be the most influential factor in our analysis. Another point of interest depicted by this map is the invariability of tipping percentages within geometries over time. This is further evidence for our hypothesis that tipping is strongly influenced by both social expectations and disposable income; riders in richer neighborhoods are both expected to and more able to consistently tip better than those in less affluent neighborhoods.
 
+## Link to Github Repository
 
+https://github.com/robiscuits/taxies

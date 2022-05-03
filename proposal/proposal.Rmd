@@ -2,8 +2,11 @@
 title: "Project Proposal"
 author: "Team Bravo"
 date: "4/14/2022"
-output: html_document
-output2: rmarkdown::github_document
+output:
+     github_document: default
+     html_document: default
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_format = "all") })
 ---
 
 ```{r setup, include=FALSE}

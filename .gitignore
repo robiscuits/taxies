@@ -2,7 +2,7 @@ log/
 error/
 output/
 
-proposal.html
+*.html
 
 # History files
 .Rhistory

@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(sf)
-library(RSocrata)
 ```
 
 ```{r}
@@ -24,11 +23,32 @@ city_sf <- read_sf(geo_url, as_tibble = TRUE) %>%
 
 manhattan_sf <- city_sf %>% 
   filter(borough == "Manhattan")
+
+zones <- c("Battery Park City",
+           "Central Harlem North",
+           "East Harlem North",
+           "Hudson Sq",
+           "Inwood",
+           "Inwood Hill Park",
+           "Marble Hill",
+           "Meatpacking/West Village West",
+           "Union Sq",
+           "West Village")
+
+p <- manhattan_sf %>% 
+  filter(zone %in% zones) %>% 
+  ggplot() +
+    geom_sf(data = manhattan_sf, fill = "white") +
+    geom_sf(aes(fill = zone)) +
+    theme_void() +
+    theme(legend.position = "None")
+
+ggsave('hood_map.png', p, bg='transparent')
 ```
 
 
-```{r, fig.height=1200, fig.width=1200}
-all_data <- read_csv("data/all_data.csv")
+```{r}
+all_data <- read_csv("data/pu_data.csv")
 
 df <- all_data %>% 
   group_by(objectid) %>% 
@@ -39,31 +59,29 @@ rides_sf <- manhattan_sf %>%
 
 ggplot(rides_sf) +
   geom_sf(data = manhattan_sf, fill = "white") +
-  geom_sf(aes(fill = total_amount * 100)) +
+  geom_sf(aes(fill = tip_amount / total_amount * 100)) +
   scale_fill_distiller(name = "", direction = 1, palette='Greens') +
-  theme_void() +
-    labs(title = 'Manhattan Yellow Taxi Revenue', subtitle = "June")
-
+  theme_void()
 ```
 
 ```{r}
 library(gganimate)
-library(lubridate)
 library(transformr)
 
-rides <- read_csv("data/all_data.csv") %>% 
-  group_by(objectid, month) %>% 
+rides <- read_csv("data/pu_data.csv") %>%
+  mutate(date = paste(year, month, sep = "-")) %>% 
+  group_by(objectid, date) %>% 
   summarise_at(vars(trip_distance:count), sum)
 
 rides_sf <- manhattan_sf %>% 
   merge(rides)
 
-p <- ggplot(rides_sf, aes(group=seq_along(month))) +
+anim <- ggplot(rides_sf, aes(group=seq_along(date))) +
   geom_sf(data = manhattan_sf, fill = "white") +
   geom_sf(aes(fill = total_amount / 1e6)) +
   scale_fill_distiller(
     name='Million $',
-    breaks = c(0, 2.5, 5, 7.5, 10, 12.5, 15),
+    # breaks = c(0, 2.5, 5, 7.5, 10, 12.5, 15),
     direction = 1,
     palette='Greens',
     guide = guide_colorbar(frame.colour = "black", barwidth = 2, barheight = 30)
@@ -72,49 +90,11 @@ p <- ggplot(rides_sf, aes(group=seq_along(month))) +
   theme(plot.title = element_text(face = "bold")) +
   labs(
     title = 'Manhattan Yellow Taxi Revenue By Month',
-    subtitle = '{month.name[as.integer(closest_state)]}'
+    subtitle = '{closest_state}'
     ) +
   transition_states(month) 
 
-animate(p, height = 1200, width = 1200)
+animate(anim, nframes = 60, fps = 5)
 anim_save("income.gif")
 ```
-```
-```{r}
-rides_sf%>%
-  group_by(zone)%>%
-  summarize(first(objectid),tips = mean(avg_tips))%>%
-  arrange(desc(tips))
-```
 
-```{r}
-zones = c(13,125,249,158,234,153,128,42,74,127)
-
-ezplot = rides_sf%>%
-  filter(objectid %in% zones)
-
-ggplot(ezplot, aes(x = date, y = avg_tips))+
-  geom_smooth(aes(color = zone), se = F)+
-  theme_void() +
-  theme(plot.title = element_text(face = "bold")) +
-  labs(
-    title = 'Average Tips By Month & Neighborhood',
-    x = 'Date of Measure',
-    y = 'Average Tips'
-    )
-```
-
-```{r}
-library(ggpubr)
-library(rstatix)
-library(eeptools)
-
-rides_aov = rides_sf%>%
-  st_drop_geometry()%>%
-  select(zone, date, avg_tips)%>%
-  group_by(zone,date)%>%
-  summarize(avg_tips = mean(avg_tips))
-
-res.aov <- anova_test(data = rides_aov, dv = avg_tips, wid = zone, within = date)
-get_anova_table(res.aov)
-```
