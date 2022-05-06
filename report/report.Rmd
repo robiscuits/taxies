@@ -28,7 +28,7 @@ Our analysis consisted of a spatial density analysis over time. As shown in the 
 <br/><br/>
 
 ```{r, echo=FALSE, out.width="70%", fig.cap="\\textcolor{red}{Higher tipping percentages on wealtier regions}", fig.align = 'center'}
-knitr::include_graphics("C:/Users/17083/OneDrive/Documents/stat479/final/imgs/avgtips.gif")
+knitr::include_graphics("../imgs/avgtips.gif")
 ```
 
 <br/><br/>
@@ -42,8 +42,8 @@ After we identified visual differences between neighborhood locales, we looked i
 <br/><br/>
 
 ```{r, echo=FALSE, out.width="70%", fig.cap="\\textcolor{red}{Higher tipping percentages on wealtier regions}", fig.show="hold", out.width="50%"}
-knitr::include_graphics("C:/Users/17083/OneDrive/Documents/stat479/final/imgs/ratediffs.png")
-knitr::include_graphics("C:/Users/17083/OneDrive/Documents/stat479/final/imgs/hood_map.png")
+knitr::include_graphics("../imgs/ratediffs.png")
+knitr::include_graphics("../imgs/hood_map.png")
 ```
 
 <br/><br/>
@@ -55,7 +55,7 @@ Our visual and statistical analyses for Brooklyn neighborhood tipping difference
 <br/><br/>
 
 ```{r, echo=FALSE, out.width="70%", fig.cap="\\textcolor{red}{Higher tipping percentages on wealtier regions}", fig.align = 'center'}
-knitr::include_graphics("C:/Users/17083/OneDrive/Documents/stat479/final/imgs/avgtips_brooklyn.gif")
+knitr::include_graphics("../imgs/avgtips_brooklyn.gif")
 ```
 
 <br/><br/>
@@ -63,8 +63,8 @@ knitr::include_graphics("C:/Users/17083/OneDrive/Documents/stat479/final/imgs/av
 <br/><br/>
 
 ```{r, echo=FALSE, out.width="70%", fig.cap="\\textcolor{red}{Higher tipping percentages on wealtier regions}", fig.show="hold", out.width="50%"}
-knitr::include_graphics("C:/Users/17083/OneDrive/Documents/stat479/final/imgs/ratediffs_brooklyn.png")
-knitr::include_graphics("C:/Users/17083/OneDrive/Documents/stat479/final/imgs/hood_map_brooklyn.png")
+knitr::include_graphics("../imgs/ratediffs_brooklyn.png")
+knitr::include_graphics("../imgs/hood_map_brooklyn.png")
 ```
 
 <br/><br/>
