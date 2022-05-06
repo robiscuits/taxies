@@ -14,11 +14,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-The question we wish to answer is **whether different New York City neighborhoods differ significantly from each other in tipping percentage.** To answer this question, we computed and compared the average tipping percentages on different pick-up locations and see how the tip amount varies by time. Our dataset exists on Kaggle as the New York Yellow Taxi dataset, but we sourced it directly from GitHub, where we found additional months of data. The data contain a file for each month with pick-up and drop-off times, pick-up and drop-off locations, fare amount and tip amount. Our shell script downloads the data separately by month, wrote a .sub file to clean and process the data in parallel on the CHTC, with each node given a month of data, and finished by writing an .Rmd file to finish our analysis and create our visualizations. We found little variation in tipping percentage by neighborhood over time, however higher concentrations did generally exist below central park than above it.
+The question we wish to answer is **whether different New York City neighborhoods differ significantly from each other in tipping percentage.** To answer this question, we computed and compared the average tipping percentages on different pick-up locations and see how the tip amount varies by time. Our dataset exists on Kaggle as the New York Yellow Taxi dataset, but we sourced it directly from GitHub, where we found additional months of data. The data contain a file for each month with pick-up and drop-off times, pick-up and drop-off locations, fare amount and tip amount. Our shell script downloads the data separately by month, wrote a .sub file to clean and process the data in parallel on the CHTC, with each node given a month of data, and finished by writing an .Rmd file to finish our analysis and create our visualizations. We ran two separate analysis for the two boroughs we focused our efforts on: Manhattan and Brooklyn. We found little variation in tipping percentage by neighborhood over time, however we did find convincing evidence for differences in tipping percentage density between local neighborhoods within each borough.
 
 ## Data Description / Manipulation
 
 The dataset contains information on every taxi trip to occur in New York City between 2005 and 2021. The data are contained in a different csv for each month within that time frame. Early on, we ran into issues with downloading all of the data as one big file, so we found another website with the same data as well as more data for other years. For our spatial analysis, our computation was initially going to rely on the exact latitude and longitude of a trip’s pick-up or drop-off point. Through a bit of data observation, we found that files from later years did not contain this information, and that we would have had to bin these coordinates into neighborhoods, a challenging task. Luckily, for all years after 2017, the data files contained a different variable, `LocationID`, which categorized the location into different neighborhoods. Due to latitude and longitude shape files being difficult to work with, we took the ID value to simplify our computation, joining it with another dataset of NYC neighborhood shape files, which were compatible with our data. This is how we were able to graph our tipping and frequency values on a map. 
+
+## Manhattan
 
 ## Visual Analysis
 
@@ -33,7 +35,7 @@ knitr::include_graphics("../imgs/avgtips.gif")
 
 ## Statistical Analysis
 
-After we identified visual differences between neighborhood locales, we looked into empirical analysis of them. Our idea here was to assess whether neighborhood had an empirically verifiable effect on tipping percentage, isolated at each specific month of data. Thus, a Repeated Measures ANOVA was run on average tips by date and location for the full dataset. This methodology was used in order to determine how much variance in tipping could be explained by pickup neighborhood while controlling for the temporal dimension of our data. The effect of neighborhood on average tips was marginally significant (p=0.06) within each date point (months). Battery Park City and Hudson Square, along with West Village, meatpacking district and Union Square boast the highest tipping percentages averaged over our time frame. These neighborhoods are all located near the Financial District, in wealthier neighborhoods. Northern Manhattan neighborhoods like Harlem & Inwood boast lower tipping percentages. More on these differences below.
+After we identified visual differences between neighborhood locales, we looked into empirical analysis of them. Our idea here was to assess whether neighborhood had an empirically verifiable effect on tipping percentage, isolated at each specific month of data. Thus, a Repeated Measures ANOVA was run on average tips by date and location for the full dataset. This methodology was used in order to determine how much variance in tipping could be explained by pickup neighborhood while controlling for the temporal dimension of our data. The effect of neighborhood on average tips was highly significant (p=6.05e-17) within each date point (months), giving us ample evidence to conclude that there is some dependency between location and tipping. Battery Park City and Hudson Square, along with West Village, meatpacking district and Union Square boast the highest tipping percentages averaged over our time frame. These neighborhoods are all located near the Financial District, in wealthier neighborhoods. Northern Manhattan neighborhoods like Harlem & Inwood boast lower tipping percentages. More on these differences below.
 
 
 <br/><br/>
@@ -44,6 +46,19 @@ knitr::include_graphics("../imgs/hood_map.png")
 ```
 
 <br/><br/>
+
+## Brooklyn
+
+Our visual and statistical analyses for Brooklyn neighborhood tipping differences followed a very similar pattern to our analysis of Manhattan.
+
+<br/><br/>
+
+```{r, echo=FALSE, out.width="70%", fig.cap="\\textcolor{red}{Higher tipping percentages on wealtier regions}", fig.align = 'center'}
+knitr::include_graphics("../imgs/avgtips_brooklyn.gif")
+```
+
+<br/><br/>
+
 
 ## Conclusion
 
