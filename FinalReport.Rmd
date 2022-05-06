@@ -77,24 +77,162 @@ rides_sf <- manhattan_sf %>%
   merge(rides)
 
 anim <- ggplot(rides_sf, aes(group=seq_along(date))) +
-  geom_sf(data = manhattan_sf, fill = "white") +
-  geom_sf(aes(fill = total_amount / 1e6)) +
+  geom_sf(data = manhattan_sf, fill = "red") +
+  geom_sf(aes(fill = avg_tips)) +
   scale_fill_distiller(
-    name='Million $',
-    # breaks = c(0, 2.5, 5, 7.5, 10, 12.5, 15),
+    name='Percentage',
+    breaks = c(0, 5, 10, 15, 20, 25),
     direction = 1,
     palette='Greens',
-    guide = guide_colorbar(frame.colour = "black", barwidth = 2, barheight = 30)
+    guide = guide_colorbar(frame.colour = "black", barwidth = 2, barheight = 30, nbins = 6)
     ) +
   theme_void(base_size = 30) +
   theme(plot.title = element_text(face = "bold")) +
   labs(
-    title = 'Manhattan Yellow Taxi Revenue By Month',
-    subtitle = '{closest_state}'
+    title = 'Manhattan Yellow Taxi Average Tips By Month',
+    subtitle = '{paste(month(closest_state), year(closest_state), sep="/")}'
     ) +
-  transition_states(month) 
+  transition_states(date) 
 
-animate(anim, nframes = 60, fps = 5)
-anim_save("income.gif")
+animate(p, height = 1200, width = 1200, fps= 5, nframes=120, renderer=gifski_renderer())
+anim_save("avgtips.gif")
+```
+rides_sf%>%
+  group_by(zone)%>%
+  summarize(first(objectid),tips = mean(avg_tips))%>%
+  arrange(desc(tips))
+
+zones = c(13,125,249,158,234,153,128,42,74,127)
+
+ezplot = rides_sf%>%
+  filter(objectid %in% zones)
+
+p = ggplot(ezplot, aes(x = date, y = avg_tips))+
+  geom_smooth(aes(color = zone), se = F)+
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(
+    title = 'Average Tips By Month & Neighborhood',
+    x = 'Date of Measure',
+    y = 'Average Tips'
+    )
+ggsave("manhattanTrends.png", p)
 ```
 
+```{r}
+library(ggpubr)
+library(rstatix)
+library(eeptools)
+
+rides_aov = rides_sf%>%
+  st_drop_geometry()%>%
+  select(zone, date, avg_tips)%>%
+  group_by(zone,date)%>%
+  summarize(avg_tips = mean(avg_tips))%>%
+  ungroup()
+
+res.aov <- rstatix::anova_test(data = rides_aov, dv = avg_tips, wid = zone, within = date)
+get_anova_table(res.aov)
+
+```
+
+```{r, fig.height=1200, fig.width=1200}
+
+brooklyn_sf <- city_sf %>% 
+  filter(borough == "Brooklyn")
+all_data <- read_csv("data/all_data.csv")
+
+df <- all_data %>% 
+  group_by(objectid) %>% 
+  summarise_at(vars(trip_distance:count), sum)
+
+rides_sf <- brooklyn_sf %>% 
+  merge(df)
+
+p <- ggplot(rides_sf) +
+  geom_sf(data = manhattan_sf, fill = "white") +
+  geom_sf(aes(fill = total_amount * 100)) +
+  scale_fill_distiller(name = "", direction = 1, palette='Greens') +
+  theme_void() +
+    labs(title = 'Manhattan Yellow Taxi Revenue', subtitle = "June")
+
+ggsave("test.png", p)
+```
+
+```{r}
+library(gganimate)
+library(lubridate)
+library(transformr)
+library(gifski)
+
+rides <- read_csv("data/pu_data.csv") %>% 
+  mutate(date = my(paste(month,year,sep="/")))%>%
+  group_by(objectid, date) %>% 
+  summarise_at(vars(trip_distance:count), sum)
+
+rides_sf_b <- brooklyn_sf %>% 
+  merge(rides)%>%
+  mutate(avg_tips = (tip_amount/total_amount)*100)
+
+p <- ggplot(rides_sf_b, aes(group=seq_along(date))) +
+  geom_sf(data = brooklyn_sf, fill = "red") +
+  geom_sf(aes(fill = avg_tips)) +
+  scale_fill_distiller(
+    name='Percentage',
+    breaks = c(0, 5, 10, 15, 20, 25),
+    direction = 1,
+    palette='Greens',
+    guide = guide_colorbar(frame.colour = "black", barwidth = 2, barheight = 30, nbins = 6)
+    ) +
+  theme_void(base_size = 30) +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(
+    title = 'Brooklyn Yellow Taxi Average Tips By Month',
+    subtitle = '{paste(month(closest_state), year(closest_state), sep="/")}'
+    ) +
+  transition_states(date) 
+
+animate(p, height = 1200, width = 1200, fps= 5, nframes=120, renderer=gifski_renderer())
+anim_save("avgtips_brooklyn.gif")
+```
+
+```{r}
+library(ggpubr)
+library(rstatix)
+library(eeptools)
+
+rides_aov_b = rides_sf_b%>%
+  st_drop_geometry()%>%
+  select(zone, date, avg_tips)%>%
+  group_by(zone,date)%>%
+  summarize(avg_tips = mean(avg_tips))%>%
+  ungroup()
+
+res.aov.b <- anova_test(data = rides_aov_b, dv = avg_tips, wid = zone, within = date)
+get_anova_table(res.aov.b)
+
+```
+
+```{r}
+rides_sf_b%>%
+  st_drop_geometry()%>%
+  group_by(zone)%>%
+  summarize(first(objectid),tips = mean(avg_tips))%>%
+  arrange(tips)
+
+zones = c(52,40,255,33,66,71,222,35,72,77)
+
+ezplot = rides_sf_b%>%
+  filter(objectid %in% zones)
+
+p = ggplot(ezplot, aes(x = date, y = avg_tips))+
+  geom_smooth(aes(color = zone), se = F)+
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(
+    title = 'Average Tips By Month & Neighborhood',
+    x = 'Date of Measure',
+    y = 'Average Tips'
+    )
+ggsave("brooklyn_trends.png", p)
+```
