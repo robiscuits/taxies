@@ -1,7 +1,7 @@
-Project Proposal
+Spatial Distribution of Taxi Tipping, NYC
 ================
 Team Bravo
-2022-05-02
+2022-05-06
 
 ## Introduction
 
@@ -17,9 +17,11 @@ fare amount and tip amount. Our shell script downloads the data
 separately by month, wrote a .sub file to clean and process the data in
 parallel on the CHTC, with each node given a month of data, and finished
 by writing an .Rmd file to finish our analysis and create our
-visualizations. We found little variation in tipping percentage by
-neighborhood over time, however higher concentrations did generally
-exist below central park than above it.
+visualizations. We ran two separate analysis for the two boroughs we
+focused our efforts on: Manhattan and Brooklyn. We found little
+variation in tipping percentage by neighborhood over time, however we
+did find convincing evidence for differences in tipping percentage
+density between local neighborhoods within each borough.
 
 ## Data Description / Manipulation
 
@@ -41,26 +43,135 @@ it with another dataset of NYC neighborhood shape files, which were
 compatible with our data. This is how we were able to graph our tipping
 and frequency values on a map.
 
+## Manhattan
+
+## Visual Analysis
+
+Our analysis consisted of a spatial density analysis over time. As shown
+in the graph on the right, we graphed tipping percentage concentrations
+within neighborhoods on Manhattan. The darker the shade of green within
+each shape, the higher the average percentage of ride cost that was
+tipped within that geometry and month (missing values are colored red).
+We see a higher density of tipping percentages as we move south through
+Manhattan. We also see tip density increase in magnitude over the time
+frame of the animation. <br/><br/>
+
+<div class="figure" style="text-align: center">
+
+<img src="../imgs/avgtips.gif" alt="\textcolor{red}{Higher tipping percentages on wealtier regions}" width="70%" />
+<p class="caption">
+</p>
+
+</div>
+
+<br/><br/> Although the animation above shows little variability in
+tipping percentages over time within neighborhoods, we can see a slight
+favoring of southern Manhattan regions. Battery Park City and Hudson
+Square, along with West Village and Union Square boast the highest
+tipping percentages averaged over our time frame. These neighborhoods
+are all located near the Financial District, in wealthier neighborhoods.
+Harlem and other northern Manhattan neighborhoods boast lower tipping
+percentages. These neighborhoods are also far less attractive to
+wealthier riders, which we posit to be the most influential factor in
+our analysis.
+
+## Statistical Analysis
+
+After we identified visual differences between neighborhood locales, we
+looked into empirical analysis of them. Our idea here was to assess
+whether neighborhood had an empirically verifiable effect on tipping
+percentage, isolated at each specific month of data. Thus, a Repeated
+Measures ANOVA was run on average tips by date and location for the full
+dataset. This methodology was used in order to determine how much
+variance in tipping could be explained by pickup neighborhood while
+controlling for the temporal dimension of our data. The effect of
+neighborhood on average tips was highly significant (p=6.05e-17) within
+each date point (months), giving us ample evidence to conclude that
+there is some dependency between location and tipping. Battery Park City
+and Hudson Square, along with West Village, meatpacking district and
+Union Square boast the highest tipping percentages averaged over our
+time frame. These neighborhoods are all located near the Financial
+District, in wealthier neighborhoods. Northern Manhattan neighborhoods
+like Harlem & Inwood boast lower tipping percentages. More on these
+differences below.
+
 <br/><br/>
 
-<img src="../imgs/avgtips.gif" title="\textcolor{red}{Higher tipping percentages on wealtier regions}" alt="\textcolor{red}{Higher tipping percentages on wealtier regions}" width="70%" style="display: block; margin: auto;" />
+<div class="figure">
+
+<img src="../imgs/ratediffs.png" alt="\textcolor{red}{Higher tipping percentages on wealtier regions}" width="50%" /><img src="../imgs/hood_map.png" alt="\textcolor{red}{Higher tipping percentages on wealtier regions}" width="50%" />
+<p class="caption">
+</p>
+
+</div>
 
 <br/><br/>
+
+## Brooklyn
+
+Our visual and statistical analyses for Brooklyn neighborhood tipping
+differences followed a very similar pattern to our analysis of
+Manhattan. We began by re-filtering the data so that we were focusing
+solely on data for the Brooklyn borough. Then we created a gif of this
+specific data subset over time, as well as an analysis of the five
+highest and lowest average tippers.
+
+<br/><br/>
+
+<div class="figure" style="text-align: center">
+
+<img src="../imgs/avgtips_brooklyn.gif" alt="\textcolor{red}{Higher tipping percentages on wealtier regions}" width="70%" />
+<p class="caption">
+</p>
+
+</div>
+
+<br/><br/>
+
+<br/><br/>
+
+<div class="figure">
+
+<img src="../imgs/ratediffs_brooklyn.png" alt="\textcolor{red}{Higher tipping percentages on wealtier regions}" width="50%" /><img src="../imgs/hood_map_brooklyn.png" alt="\textcolor{red}{Higher tipping percentages on wealtier regions}" width="50%" />
+<p class="caption">
+</p>
+
+</div>
+
+<br/><br/>
+
+The animation shows a lot more variability over time than the Manhattan
+animation shows. This could be due to a lower population, and thus a
+lower cab ride frequency, within this borough as compared with
+Manhattan.However, we do see a noticeable density trend, just like we
+saw for Manhattan. And, what do you know, it’s the wealthier areas like
+Brooklyn Heights (Northwest) that are generally tipping higher
+percentages. The statistical analysis for this borough returned similar
+results to that of the Manhattan analysis, we ran another RMANOVA to
+test differences between neighborhoods when controlling for time. The
+result was highly significant(p=9.07e-40), lending us evidence that
+neighborhood and tipping percentage are not independent of each other.
 
 ## Conclusion
 
-Although the animation above shows little variability in tipping
-percentages over time within neighborhoods, we can see a slight favoring
-of southern Manhattan regions. Battery Park City and Hudson Square,
-along with West Village and Union Square boast the highest tipping
-percentages averaged over our time frame. These neighborhoods are all
-located near the Financial District, in wealthier neighborhoods. Harlem
-and other northern Manhattan neighborhoods boast lower tipping
-percentages. These neighborhoods are also far less attractive to
-wealthier riders, which we posit to be the most influential factor in
-our analysis. Another point of interest depicted by this map is the
-invariability of tipping percentages within geometries over time. This
-is further evidence for our hypothesis that tipping is strongly
+We think that that tipping is strongly influenced by both social
+expectations and disposable income; riders in richer neighborhoods are
+both expected to and more able to consistently tip better than those in
+less affluent neighborhoods. This idea is backed up by the general
+invariability of tipping percentages within geometries over time, with
+the same neighborhoods holding relatively constant in terms of tipping
+percentage density. Another point of interest depicted by these maps are
+the invariability of tipping percentages within geometries over time.
+This is further evidence for our hypothesis that tipping is strongly
 influenced by both social expectations and disposable income; riders in
 richer neighborhoods are both expected to and more able to consistently
-tip better than those in less affluent neighborhoods.
+tip better than those in less affluent neighborhoods. Our empirical
+analysis confirms these claims; we do see evidence of a relationship
+between neighborhood and tipping, and our general summaries suggest that
+these differences exist largely between affluent and underpriveleged
+neighborhoods. Finally, we want to take the time to address the fact
+that this information, if presented to an actual client, might have
+adverse social consequences for potential passengers in the
+neighborhoods identified by us as lower-tipping. Taxies may direct their
+efforts away from these neighborhoods, lowering transportation
+availability in them.
