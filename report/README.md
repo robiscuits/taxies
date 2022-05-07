@@ -7,54 +7,48 @@ Team Bravo
 
 The question we wish to answer is **whether different New York City
 neighborhoods differ significantly from each other in tipping
-percentage.** To answer this question, we computed and compared the
+percentage**. To answer this question, we computed and compared the
 average tipping percentages on different pick-up locations and see how
 the tip amount varies by time. Our dataset exists on Kaggle as the New
-York Yellow Taxi dataset, but we sourced it directly from GitHub, where
-we found additional months of data. The data contain a file for each
-month with pick-up and drop-off times, pick-up and drop-off locations,
-fare amount and tip amount. Our shell script downloads the data
-separately by month, wrote a .sub file to clean and process the data in
-parallel on the CHTC, with each node given a month of data, and finished
-by writing an .Rmd file to finish our analysis and create our
-visualizations. We ran two separate analysis for the two boroughs we
-focused our efforts on: Manhattan and Brooklyn. We found little
-variation in tipping percentage by neighborhood over time, however we
-did find convincing evidence for differences in tipping percentage
-density between local neighborhoods within each borough.
+York Yellow Taxi dataset, but we found additional months of data on a
+separate website. The data contains a file for each month with pick-up
+and drop-off times, pick-up and drop-off locations, fare amount and tip
+amount. Our shell script downloads the data separately by month, then a
+.sub file cleans and processes the data in parallel on the CHTC, with
+each node given a month of data, and finished by writing an .Rmd file to
+finish our analysis and create our visualizations. We ran two analyses
+for the boroughs we focused our efforts on: Manhattan and Brooklyn. We
+found little variation in tipping percentage by neighborhood over time,
+however we did find convincing evidence for differences in tipping
+percentage density between neighborhoods within each borough.
 
 ## Data Description / Manipulation
 
 The dataset contains information on every taxi trip to occur in New York
-City between 2005 and 2021. The data are contained in a different csv
-for each month within that time frame. Early on, we ran into issues with
-downloading all of the data as one big file, so we found another website
-with the same data as well as more data for other years. For our spatial
-analysis, our computation was initially going to rely on the exact
-latitude and longitude of a trip’s pick-up or drop-off point. Through a
-bit of data observation, we found that files from later years did not
-contain this information, and that we would have had to bin these
-coordinates into neighborhoods, a challenging task. Luckily, for all
-years after 2017, the data files contained a different variable,
-`LocationID`, which categorized the location into different
+City between 2005 and 2021. The data is contained in a different csv for
+each month within that time frame. Initially, we had issues downloading
+all of the data as one big file, so we directly imported each csv from a
+website using the wget command. For our spatial analysis, our
+computation was initially going to rely on the exact latitude and
+longitude of a trip’s pick-up point. Through a bit of data observation,
+we found that files from years after 2017 did not contain information on
+latitude and longitude. Instead, these later data files contained a
+`LocationID` variable which categorized the location into different
 neighborhoods. Due to latitude and longitude shape files being difficult
-to work with, we took the ID value to simplify our computation, joining
-it with another dataset of NYC neighborhood shape files, which were
-compatible with our data. This is how we were able to graph our tipping
-and frequency values on a map.
+to work with, we used the files from years after 2017 and the ID value
+to simplify our computation. This is how we were able to graph our
+tipping and frequency values on a map.
 
 ## Manhattan
 
 ## Visual Analysis
 
 Our analysis consisted of a spatial density analysis over time. As shown
-in the graph on the right, we graphed tipping percentage concentrations
-within neighborhoods on Manhattan. The darker the shade of green within
-each shape, the higher the average percentage of ride cost that was
-tipped within that geometry and month (missing values are colored red).
-We see a higher density of tipping percentages as we move south through
-Manhattan. We also see tip density increase in magnitude over the time
-frame of the animation. <br/><br/>
+in the animation, we graphed tipping percentage concentrations within
+neighborhoods on Manhattan. The darker the shade of green within each
+shape, the higher the average percentage of ride cost that was tipped
+within that neighborhood and month (missing values are colored red).
+<br/><br/>
 
 <div class="figure" style="text-align: center">
 
@@ -73,13 +67,14 @@ are all located near the Financial District, in wealthier neighborhoods.
 Harlem and other northern Manhattan neighborhoods boast lower tipping
 percentages. These neighborhoods are also far less attractive to
 wealthier riders, which we posit to be the most influential factor in
-our analysis.
+our analysis. We also see a slight increase in tipping percentage over
+the time frame of the animation.
 
 ## Statistical Analysis
 
 After we identified visual differences between neighborhood locales, we
 looked into empirical analysis of them. Our idea here was to assess
-whether neighborhood had an empirically verifiable effect on tipping
+whether neighborhoods had an empirically verifiable effect on tipping
 percentage, isolated at each specific month of data. Thus, a Repeated
 Measures ANOVA was run on average tips by date and location for the full
 dataset. This methodology was used in order to determine how much
@@ -111,10 +106,7 @@ differences below.
 
 Our visual and statistical analyses for Brooklyn neighborhood tipping
 differences followed a very similar pattern to our analysis of
-Manhattan. We began by re-filtering the data so that we were focusing
-solely on data for the Brooklyn borough. Then we created a gif of this
-specific data subset over time, as well as an analysis of the five
-highest and lowest average tippers.
+Manhattan.
 
 <br/><br/>
 
@@ -141,37 +133,31 @@ highest and lowest average tippers.
 <br/><br/>
 
 The animation shows a lot more variability over time than the Manhattan
-animation shows. This could be due to a lower population, and thus a
-lower cab ride frequency, within this borough as compared with
-Manhattan.However, we do see a noticeable density trend, just like we
-saw for Manhattan. And, what do you know, it’s the wealthier areas like
-Brooklyn Heights (Northwest) that are generally tipping higher
-percentages. The statistical analysis for this borough returned similar
-results to that of the Manhattan analysis, we ran another RMANOVA to
-test differences between neighborhoods when controlling for time. The
-result was highly significant(p=9.07e-40), lending us evidence that
-neighborhood and tipping percentage are not independent of each other.
+animation shows. This could be due to a lower population, and lower cab
+ride frequency, within this borough. However, we do see a similar
+density trend. Just like in Manhattan, the wealthier areas, like
+Brooklyn Heights (Northwest) generally tip higher percentages. The
+statistical analysis for this borough returned similar results to that
+of the Manhattan analysis. We ran another RMANOVA to test differences
+between neighborhoods when controlling for time. The result was highly
+significant(p=9.07e-40), giving evidence that neighborhood and tipping
+percentage are not independent of each other.
 
 ## Conclusion
 
-We think that that tipping is strongly influenced by both social
-expectations and disposable income; riders in richer neighborhoods are
-both expected to and more able to consistently tip better than those in
-less affluent neighborhoods. This idea is backed up by the general
-invariability of tipping percentages within geometries over time, with
-the same neighborhoods holding relatively constant in terms of tipping
-percentage density. Another point of interest depicted by these maps are
+After our analysis, we concluded that tipping is strongly influenced by
+both social expectations and disposable income; riders in richer
+neighborhoods are both expected to and more able to consistently tip
+better than those in less affluent neighborhoods. This idea is backed up
+by the general invariability of tipping percentages within geometries
+over time, as neighborhoods average tipping percentages tend to stay
+relatively constant. Another point of interest depicted by this map is
 the invariability of tipping percentages within geometries over time.
-This is further evidence for our hypothesis that tipping is strongly
-influenced by both social expectations and disposable income; riders in
-richer neighborhoods are both expected to and more able to consistently
-tip better than those in less affluent neighborhoods. Our empirical
-analysis confirms these claims; we do see evidence of a relationship
-between neighborhood and tipping, and our general summaries suggest that
-these differences exist largely between affluent and underpriveleged
-neighborhoods. Finally, we want to take the time to address the fact
-that this information, if presented to an actual client, might have
-adverse social consequences for potential passengers in the
-neighborhoods identified by us as lower-tipping. Taxies may direct their
-efforts away from these neighborhoods, lowering transportation
-availability in them.
+This is further evidence for our hypothesis; riders in richer
+neighborhoods are both expected to and more able to consistently tip
+better than those in less affluent neighborhoods. Finally, we want to
+take the time to address the fact that this information, if presented to
+an actual client, might have adverse social consequences for potential
+passengers in the “lower-tipping” neighborhoods. Knowing tips are
+scarce, taxies may direct their efforts away from these neighborhoods to
+pursue higher tips.
