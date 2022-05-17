@@ -1,7 +1,6 @@
 # Taxies
 ### Distributed computing final project - Stat479
 
-Ideas for analysis:
-  Compare tips to how rider paid/ how many riders there were
-  
-  Spatial analysis of tips when controlling for distance ridden
+High Throughput parallel processing on NYC Yellow Taxies dataset to produce animations of NYC tipping trends over time.
+
+See the ReadMe in the Report folder for the results of the project.
